@@ -1,488 +1,221 @@
-This is the PHP port of Hamcrest Matchers
-=========================================
+# league/commonmark
 
-[![Build Status](https://travis-ci.org/hamcrest/hamcrest-php.png?branch=master)](https://travis-ci.org/hamcrest/hamcrest-php)
+[![Latest Version](https://img.shields.io/packagist/v/league/commonmark.svg?style=flat-square)](https://packagist.org/packages/league/commonmark)
+[![Total Downloads](https://img.shields.io/packagist/dt/league/commonmark.svg?style=flat-square)](https://packagist.org/packages/league/commonmark)
+[![Software License](https://img.shields.io/badge/License-BSD--3-brightgreen.svg?style=flat-square)](LICENSE)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/thephpleague/commonmark/tests.yml?branch=main&style=flat-square)](https://github.com/thephpleague/commonmark/actions?query=workflow%3ATests+branch%3Amain)
+[![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/thephpleague/commonmark.svg?style=flat-square)](https://scrutinizer-ci.com/g/thephpleague/commonmark/code-structure)
+[![Quality Score](https://img.shields.io/scrutinizer/g/thephpleague/commonmark.svg?style=flat-square)](https://scrutinizer-ci.com/g/thephpleague/commonmark)
+[![Psalm Type Coverage](https://shepherd.dev/github/thephpleague/commonmark/coverage.svg)](https://shepherd.dev/github/thephpleague/commonmark)
+[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/126/badge)](https://bestpractices.coreinfrastructure.org/projects/126)
+[![Sponsor development of this project](https://img.shields.io/badge/sponsor%20this%20package-%E2%9D%A4-ff69b4.svg?style=flat-square)](https://www.colinodell.com/sponsor)
 
-Hamcrest is a matching library originally written for Java, but
-subsequently ported to many other languages.  hamcrest-php is the
-official PHP port of Hamcrest and essentially follows a literal
-translation of the original Java API for Hamcrest, with a few
-Exceptions, mostly down to PHP language barriers:
+![league/commonmark](commonmark-banner.png)
 
-  1. `instanceOf($theClass)` is actually `anInstanceOf($theClass)`
+**league/commonmark** is a highly-extensible PHP Markdown parser created by [Colin O'Dell][@colinodell] which supports the full [CommonMark] spec and [GitHub-Flavored Markdown].  It is based on the [CommonMark JS reference implementation][commonmark.js] by [John MacFarlane] \([@jgm]\).
 
-  2. `both(containsString('a'))->and(containsString('b'))`
-     is actually `both(containsString('a'))->andAlso(containsString('b'))`
+## 📦 Installation & Basic Usage
 
-  3. `either(containsString('a'))->or(containsString('b'))`
-     is actually `either(containsString('a'))->orElse(containsString('b'))`
+This project requires PHP 7.4 or higher with the `mbstring` extension.  To install it via [Composer] simply run:
 
-  4. Unless it would be non-semantic for a matcher to do so, hamcrest-php
-     allows dynamic typing for it's input, in "the PHP way". Exception are
-     where semantics surrounding the type itself would suggest otherwise,
-     such as stringContains() and greaterThan().
+``` bash
+$ composer require league/commonmark
+```
 
-  5. Several official matchers have not been ported because they don't
-     make sense or don't apply in PHP:
+The `CommonMarkConverter` class provides a simple wrapper for converting CommonMark to HTML:
 
-       - `typeCompatibleWith($theClass)`
-       - `eventFrom($source)`
-       - `hasProperty($name)` **
-       - `samePropertyValuesAs($obj)` **
+```php
+use League\CommonMark\CommonMarkConverter;
 
-  6. When most of the collections matchers are finally ported, PHP-specific
-     aliases will probably be created due to a difference in naming
-     conventions between Java's Arrays, Collections, Sets and Maps compared
-     with PHP's Arrays.
+$converter = new CommonMarkConverter([
+    'html_input' => 'strip',
+    'allow_unsafe_links' => false,
+]);
+
+echo $converter->convert('# Hello World!');
+
+// <h1>Hello World!</h1>
+```
+
+Or if you want GitHub-Flavored Markdown, use the `GithubFlavoredMarkdownConverter` class instead:
+
+```php
+use League\CommonMark\GithubFlavoredMarkdownConverter;
+
+$converter = new GithubFlavoredMarkdownConverter([
+    'html_input' => 'strip',
+    'allow_unsafe_links' => false,
+]);
+
+echo $converter->convert('# Hello World!');
+
+// <h1>Hello World!</h1>
+```
+
+Please note that only UTF-8 and ASCII encodings are supported.  If your Markdown uses a different encoding please convert it to UTF-8 before running it through this library.
+
+🔒 If you will be parsing untrusted input from users, please consider setting the `html_input` and `allow_unsafe_links` options per the example above. See <https://commonmark.thephpleague.com/security/> for more details. If you also do choose to allow raw HTML input from untrusted users, consider using a library (like [HTML Purifier](https://github.com/ezyang/htmlpurifier)) to provide additional HTML filtering.
+
+## 📓 Documentation
+
+Full documentation on advanced usage, configuration, and customization can be found at [commonmark.thephpleague.com][docs].
+
+## ⏫ Upgrading
+
+Information on how to upgrade to newer versions of this library can be found at <https://commonmark.thephpleague.com/releases>.
+
+## 💻 GitHub-Flavored Markdown
+
+The `GithubFlavoredMarkdownConverter` shown earlier is a drop-in replacement for the `CommonMarkConverter` which adds additional features found in the GFM spec:
+
+ - Autolinks
+ - Disallowed raw HTML
+ - Strikethrough
+ - Tables
+ - Task Lists
+
+See the [Extensions documentation](https://commonmark.thephpleague.com/customization/extensions/) for more details on how to include only certain GFM features if you don't want them all.
+
+## 🗃️ Related Packages
+
+### Integrations
+
+- [CakePHP 3](https://github.com/gourmet/common-mark)
+- [Drupal](https://www.drupal.org/project/markdown)
+- [Laravel 4+](https://github.com/GrahamCampbell/Laravel-Markdown)
+- [Sculpin](https://github.com/bcremer/sculpin-commonmark-bundle)
+- [Symfony 2 & 3](https://github.com/webuni/commonmark-bundle)
+- [Symfony 4](https://github.com/avensome/commonmark-bundle)
+- [Twig Markdown extension](https://github.com/twigphp/markdown-extension)
+- [Twig filter and tag](https://github.com/aptoma/twig-markdown)
+- [Laravel CommonMark Blog](https://github.com/spekulatius/laravel-commonmark-blog)
+
+### Included Extensions
+
+See [our extension documentation](https://commonmark.thephpleague.com/extensions/overview) for a full list of extensions bundled with this library.
+
+### Community Extensions
+
+Custom parsers/renderers can be bundled into extensions which extend CommonMark.  Here are some that you may find interesting:
+
+ - [Alt Three Emoji](https://github.com/AltThree/Emoji) An emoji parser for CommonMark.
+ - [Sup Sub extensions](https://github.com/OWS/commonmark-sup-sub-extensions) - Adds support of superscript and subscript (`<sup>` and `<sub>` HTML tags)
+ - [YouTube iframe extension](https://github.com/zoonru/commonmark-ext-youtube-iframe) - Replaces youtube link with iframe.
+ - [Lazy Image extension](https://github.com/simonvomeyser/commonmark-ext-lazy-image) - Adds various options for lazy loading of images.
+ - [Marker Extension](https://github.com/noah1400/commonmark-marker-extension) - Adds support of highlighted text (`<mark>` HTML tag)
+
+Others can be found on [Packagist under the `commonmark-extension` package type](https://packagist.org/packages/league/commonmark?type=commonmark-extension).
+
+If you build your own, feel free to submit a PR to add it to this list!
+
+### Others
+
+Check out the other cool things people are doing with `league/commonmark`: <https://packagist.org/packages/league/commonmark/dependents>
+
+## 🏷️ Versioning
+
+[SemVer](http://semver.org/) is followed closely. Minor and patch releases should not introduce breaking changes to the codebase; however, they might change the resulting AST or HTML output of parsed Markdown (due to bug fixes, spec changes, etc.)  As a result, you might get slightly different HTML, but any custom code built onto this library should still function correctly.
+
+Any classes or methods marked `@internal` are not intended for use outside of this library and are subject to breaking changes at any time, so please avoid using them.
+
+## 🛠️ Maintenance & Support
+
+When a new **minor** version (e.g. `2.0` -> `2.1`) is released, the previous one (`2.0`) will continue to receive security and critical bug fixes for *at least* 3 months.
+
+When a new **major** version is released (e.g. `1.6` -> `2.0`), the previous one (`1.6`) will receive critical bug fixes for *at least* 3 months and security updates for 6 months after that new release comes out.
+
+(This policy may change in the future and exceptions may be made on a case-by-case basis.)
+
+**Professional support, including notification of new releases and security updates, is available through a [Tidelift Subscription](https://tidelift.com/subscription/pkg/packagist-league-commonmark?utm_source=packagist-league-commonmark&utm_medium=referral&utm_campaign=readme).**
+
+## 👷‍♀️ Contributing
+
+To report a security vulnerability, please use the [Tidelift security contact](https://tidelift.com/security). Tidelift will coordinate the fix and disclosure with us.
+
+If you encounter a bug in the spec, please report it to the [CommonMark] project.  Any resulting fix will eventually be implemented in this project as well.
+
+Contributions to this library are **welcome**, especially ones that:
+
+ * Improve usability or flexibility without compromising our ability to adhere to the [CommonMark spec]
+ * Mirror fixes made to the [reference implementation][commonmark.js]
+ * Optimize performance
+ * Fix issues with adhering to the [CommonMark spec]
+
+Major refactoring to core parsing logic should be avoided if possible so that we can easily follow updates made to [the reference implementation][commonmark.js]. That being said, we will absolutely consider changes which don't deviate too far from the reference spec or which are favored by other popular CommonMark implementations.
+
+Please see [CONTRIBUTING](https://github.com/thephpleague/commonmark/blob/main/.github/CONTRIBUTING.md) for additional details.
+
+## 🧪 Testing
+
+``` bash
+$ composer test
+```
+
+This will also test league/commonmark against the latest supported spec.
+
+## 🚀 Performance Benchmarks
+
+You can compare the performance of **league/commonmark** to other popular parsers by running the included benchmark tool:
+
+``` bash
+$ ./tests/benchmark/benchmark.php
+```
+
+## 👥 Credits & Acknowledgements
+
+- [Colin O'Dell][@colinodell]
+- [John MacFarlane][@jgm]
+- [All Contributors]
+
+This code is partially based on the [CommonMark JS reference implementation][commonmark.js] which is written, maintained and copyrighted by [John MacFarlane].  This project simply wouldn't exist without his work.
+
+### Sponsors
+
+We'd also like to extend our sincere thanks the following sponsors who support ongoing development of this project:
+
+ - [Tidelift](https://tidelift.com/subscription/pkg/packagist-league-commonmark?utm_source=packagist-league-commonmark&utm_medium=referral&utm_campaign=readme) for offering support to both the maintainers and end-users through their [professional support](https://tidelift.com/subscription/pkg/packagist-league-commonmark?utm_source=packagist-league-commonmark&utm_medium=referral&utm_campaign=readme) program
+ - [Blackfire](https://www.blackfire.io/) for providing an Open-Source Profiler subscription
+ - [JetBrains](https://www.jetbrains.com/) for supporting this project with complimentary [PhpStorm](https://www.jetbrains.com/phpstorm/) licenses
+ - [Taylor Otwell](https://twitter.com/taylorotwell) for sponsoring this project through GitHub sponsors
+
+Are you interested in sponsoring development of this project? See <https://www.colinodell.com/sponsor> for a list of ways to contribute.
+
+## 📄 License
+
+**league/commonmark** is licensed under the BSD-3 license.  See the [`LICENSE`](LICENSE) file for more details.
+
+## 🏛️ Governance
+
+This project is primarily maintained by [Colin O'Dell][@colinodell].  Members of the [PHP League] Leadership Team may occasionally assist with some of these duties.
+
+## 🗺️  Who Uses It?
+
+This project is used by [Drupal](https://www.drupal.org/project/markdown), [Laravel Framework](https://laravel.com/), [Cachet](https://cachethq.io/), [Firefly III](https://firefly-iii.org/), [Neos](https://www.neos.io/), [Daux.io](https://daux.io/), and [more](https://packagist.org/packages/league/commonmark/dependents)!
 
 ---
-** [Unless we consider POPO's (Plain Old PHP Objects) akin to JavaBeans]
-     - The POPO thing is a joke.  Java devs coin the term POJO's (Plain Old
-       Java Objects).
 
-
-Usage
------
-
-Hamcrest matchers are easy to use as:
-
-```php
-Hamcrest_MatcherAssert::assertThat('a', Hamcrest_Matchers::equalToIgnoringCase('A'));
-```
-
-Alternatively, you can use the global proxy-functions:
-
-```php
-$result = true;
-// with an identifier
-assertThat("result should be true", $result, equalTo(true));
-
-// without an identifier
-assertThat($result, equalTo(true));
-
-// evaluate a boolean expression
-assertThat($result === true);
-
-// with syntactic sugar is()
-assertThat(true, is(true));
-```
-
-:warning: **NOTE:** the global proxy-functions aren't autoloaded by default, so you will need to load them first:
-
-```php
-\Hamcrest\Util::registerGlobalFunctions();
-```
-
-For brevity, all of the examples below use the proxy-functions.
-
-
-Documentation
--------------
-A tutorial can be found on the [Hamcrest site](https://code.google.com/archive/p/hamcrest/wikis/TutorialPHP.wiki).
-
-
-Available Matchers
-------------------
-* [Array](../master/README.md#array)
-* [Collection](../master/README.md#collection)
-* [Object](../master/README.md#object)
-* [Numbers](../master/README.md#numbers)
-* [Type checking](../master/README.md#type-checking)
-* [XML](../master/README.md#xml)
-
-
-### Array
-
-* `anArray` - evaluates an array
-```php
-assertThat([], anArray());
-```
-
-* `hasItemInArray` - check if item exists in array
-```php
-$list = range(2, 7, 2);
-$item = 4;
-assertThat($list, hasItemInArray($item));
-```
-
-* `hasValue` - alias of hasItemInArray
-
-* `arrayContainingInAnyOrder` - check if array contains elements in any order
-```php
-assertThat([2, 4, 6], arrayContainingInAnyOrder([6, 4, 2]));
-assertThat([2, 4, 6], arrayContainingInAnyOrder([4, 2, 6]));
-```
-
-* `containsInAnyOrder` - alias of arrayContainingInAnyOrder
-
-* `arrayContaining` - An array with elements that match the given matchers in the same order.
-```php
-assertThat([2, 4, 6], arrayContaining([2, 4, 6]));
-assertthat([2, 4, 6], not(arrayContaining([6, 4, 2])));
-```
-
-* `contains` - check array in same order
-```php
-assertThat([2, 4, 6], contains([2, 4, 6]));
-```
-
-* `hasKeyInArray` - check if array has given key
-```php
-assertThat(['name'=> 'foobar'], hasKeyInArray('name'));
-```
-
-* `hasKey` - alias of hasKeyInArray
-
-* `hasKeyValuePair` - check if arary has given key, value pair
-```php
-assertThat(['name'=> 'foobar'], hasKeyValuePair('name', 'foobar'));
-```
-* `hasEntry` - same as hasKeyValuePair
-
-* `arrayWithSize` - check array has given size
-```php
-assertthat([2, 4, 6], arrayWithSize(3));
-```
-* `emptyArray` - check if array is emtpy
-```php
-assertThat([], emptyArray());
-```
-
-* `nonEmptyArray`
-```php
-assertThat([1], nonEmptyArray());
-```
-
-### Collection
-
-* `emptyTraversable` - check if traversable is empty
-```php
-$empty_it = new EmptyIterator;
-assertThat($empty_it, emptyTraversable());
-```
-
-* `nonEmptyTraversable` - check if traversable isn't empty
-```php
-$non_empty_it = new ArrayIterator(range(1, 10));
-assertThat($non_empty_it, nonEmptyTraversable());
-a
-```
-
-* `traversableWithSize`
-```php
-$non_empty_it = new ArrayIterator(range(1, 10));
-assertThat($non_empty_it, traversableWithSize(count(range(1, 10))));
-`
-```
-
-### Core
-
-* `allOf` - Evaluates to true only if ALL of the passed in matchers evaluate to true.
-```php
-assertThat([2,4,6], allOf(hasValue(2), arrayWithSize(3)));
-```
-
-* `anyOf` - Evaluates to true if ANY of the passed in matchers evaluate to true.
-```php
-assertThat([2, 4, 6], anyOf(hasValue(8), hasValue(2)));
-```
-
-* `noneOf` - Evaluates to false if ANY of the passed in matchers evaluate to true.
-```php
-assertThat([2, 4, 6], noneOf(hasValue(1), hasValue(3)));
-```
-
-* `both` + `andAlso` - This is useful for fluently combining matchers that must both pass.
-```php
-assertThat([2, 4, 6], both(hasValue(2))->andAlso(hasValue(4)));
-```
-
-* `either` + `orElse` - This is useful for fluently combining matchers where either may pass,
-```php
-assertThat([2, 4, 6], either(hasValue(2))->orElse(hasValue(4)));
-```
-
-* `describedAs` - Wraps an existing matcher and overrides the description when it fails.
-```php 
-$expected = "Dog";
-$found = null;
-// this assertion would result error message as Expected: is not null but: was null
-//assertThat("Expected {$expected}, got {$found}", $found, is(notNullValue()));
-// and this assertion would result error message as Expected: Dog but: was null
-//assertThat($found, describedAs($expected, notNullValue()));
-```
-
-* `everyItem` - A matcher to apply to every element in an array.
-```php
-assertThat([2, 4, 6], everyItem(notNullValue()));
-```
-
-* `hasItem` - check array has given item, it can take a matcher argument
-```php
-assertThat([2, 4, 6], hasItem(equalTo(2)));
-```
-
-* `hasItems` - check array has givem items, it can take multiple matcher as arguments
-```php
-assertThat([1, 3, 5], hasItems(equalTo(1), equalTo(3)));
-```
-
-### Object
-
-* `hasToString` - check `__toString` or `toString` method
-```php
-class Foo {
-    public $name = null;
-
-    public function __toString() {
-        return "[Foo]Instance";
-    }
-}
-$foo = new Foo;
-assertThat($foo, hasToString(equalTo("[Foo]Instance")));
-```
-
-* `equalTo` - compares two instances using comparison operator '=='
-```php
-$foo = new Foo;
-$foo2 = new Foo;
-assertThat($foo, equalTo($foo2));
-```
-
-* `identicalTo` - compares two instances using identity operator '==='
-```php
-assertThat($foo, is(not(identicalTo($foo2))));
-```
-
-* `anInstanceOf` - check instance is an instance|sub-class of given class
-```php
-assertThat($foo, anInstanceOf(Foo::class));
-```
-
-* `any` - alias of `anInstanceOf`
-
-* `nullValue` check null
-```php
-assertThat(null, is(nullValue()));
-```
-
-* `notNullValue` check not null
-```php
-assertThat("", notNullValue());
-```
-
-* `sameInstance` - check for same instance
-```php
-assertThat($foo, is(not(sameInstance($foo2))));
-assertThat($foo, is(sameInstance($foo)));
-```
-
-* `typeOf`- check type
-```php 
-assertThat(1, typeOf("integer"));
-```
-
-* `notSet` - check if instance property is not set
-```php
-assertThat($foo, notSet("name"));
-```
-
-* `set` - check if instance property is set
-```php
-$foo->name = "bar";
-assertThat($foo, set("name"));
-```
-
-### Numbers
-
-* `closeTo` - check value close to a range
-```php
-assertThat(3, closeTo(3, 0.5));
-```
-
-* `comparesEqualTo` - check with '=='
-```php
-assertThat(2, comparesEqualTo(2));
-```
-
-* `greaterThan` - check '>'
-```
-assertThat(2, greaterThan(1));
-```
-
-* `greaterThanOrEqualTo`
-```php
-assertThat(2, greaterThanOrEqualTo(2));
-```
-
-* `atLeast` - The value is >= given value
-```php
-assertThat(3, atLeast(2));
-```
-* `lessThan`
-```php
-assertThat(2, lessThan(3));
-```
-
-* `lessThanOrEqualTo`
-```php
-assertThat(2, lessThanOrEqualTo(3));
-```
-
-* `atMost` - The value is <= given value
-```php
-assertThat(2, atMost(3));
-```
-
-### String
-
-* `emptyString` - check for empty string
-```php
-assertThat("", emptyString());
-```
-
-* `isEmptyOrNullString`
-```php
-assertThat(null, isEmptyOrNullString());
-```
-
-* `nullOrEmptyString`
-```php
-assertThat("", nullOrEmptyString());
-```
-
-* `isNonEmptyString`
-```php
-assertThat("foo", isNonEmptyString());
-```
-
-* `nonEmptyString`
-```php
-assertThat("foo", nonEmptyString());
-```
-
-* `equalToIgnoringCase`
-```php
-assertThat("Foo", equalToIgnoringCase("foo"));
-```
-* `equalToIgnoringWhiteSpace`
-```php
-assertThat(" Foo ", equalToIgnoringWhiteSpace("Foo"));
-```
-
-* `matchesPattern` - matches with regex pattern
-```php
-assertThat("foobarbaz", matchesPattern('/(foo)(bar)(baz)/'));
-```
-
-* `containsString` - check for substring
-```php
-assertThat("foobar", containsString("foo"));
-```
-
-* `containsStringIgnoringCase`
-```php
-assertThat("fooBar", containsStringIgnoringCase("bar"));
-```
-
-* `stringContainsInOrder`
-```php
-assertThat("foo", stringContainsInOrder("foo"));
-```
-
-* `endsWith` - check string that ends with given value
-```php
-assertThat("foo", endsWith("oo"));
-```
-
-* `startsWith` - check string that starts with given value
-```php
-assertThat("bar", startsWith("ba"));
-```
-
-### Type-checking
-
-* `arrayValue` - check array type
-```php
-assertThat([], arrayValue());
-```
-
-* `booleanValue`
-```php
-assertThat(true, booleanValue());
-```
-* `boolValue` - alias of booleanValue
-
-* `callableValue` - check if value is callable
-```php
-$func = function () {};
-assertThat($func, callableValue());
-```
-* `doubleValue`
-```php
-assertThat(3.14, doubleValue());
-```
-
-* `floatValue`
-```php
-assertThat(3.14, floatValue());
-```
-
-* `integerValue`
-```php
-assertThat(1, integerValue());
-```
-
-* `intValue` - alias of `integerValue`
-
-* `numericValue` - check if value is numeric
-```php
-assertThat("123", numericValue());
-```
-
-* `objectValue` - check for object
-```php
-$obj = new stdClass;
-assertThat($obj, objectValue());
-```
-* `anObject`
-```php
-assertThat($obj, anObject());
-```
-
-* `resourceValue` - check resource type
-```php
-$fp = fopen("/tmp/foo", "w+");
-assertThat($fp, resourceValue());
-```
-
-* `scalarValue` - check for scaler value
-```php
-assertThat(1, scalarValue());
-```
-
-* `stringValue`
-```php
-assertThat("", stringValue());
-```
-
-### XML
-
-* `hasXPath` - check xml with a xpath
-```php
-$xml = <<<XML
-<books>
-  <book>
-    <isbn>1</isbn>   
-  </book>
-  <book>
-    <isbn>2</isbn>   
-  </book>
-</books>
-XML;
-
-$doc = new DOMDocument;
-$doc->loadXML($xml);
-assertThat($doc, hasXPath("book", 2));
-```
-
+<div align="center">
+	<b>
+		<a href="https://tidelift.com/subscription/pkg/packagist-league-commonmark?utm_source=packagist-league-commonmark&utm_medium=referral&utm_campaign=readme">Get professional support for league/commonmark with a Tidelift subscription</a>
+	</b>
+	<br>
+	<sub>
+		Tidelift helps make open source sustainable for maintainers while giving companies<br>assurances about security, maintenance, and licensing for their dependencies.
+	</sub>
+</div>
+
+[CommonMark]: http://commonmark.org/
+[CommonMark spec]: http://spec.commonmark.org/
+[commonmark.js]: https://github.com/jgm/commonmark.js
+[GitHub-Flavored Markdown]: https://github.github.com/gfm/
+[John MacFarlane]: http://johnmacfarlane.net
+[docs]: https://commonmark.thephpleague.com/
+[docs-examples]: https://commonmark.thephpleague.com/customization/overview/#examples
+[docs-example-twitter]: https://commonmark.thephpleague.com/customization/inline-parsing#example-1---twitter-handles
+[docs-example-smilies]: https://commonmark.thephpleague.com/customization/inline-parsing#example-2---emoticons
+[All Contributors]: https://github.com/thephpleague/commonmark/contributors
+[@colinodell]: https://www.twitter.com/colinodell
+[@jgm]: https://github.com/jgm
+[jgm/stmd]: https://github.com/jgm/stmd
+[Composer]: https://getcomposer.org/
+[PHP League]: https://thephpleague.com
