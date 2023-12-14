@@ -1,0 +1,63 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-image: url("uksbackgruound.jpeg");
+    background-size: cover;
+    background-position: center;
+}
+
+.profile-container {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    margin: 20px;
+}
+
+.profile-box {
+    width: 200px;
+    margin: 20px;
+    background-color: #fff;
+    border: 1px solid #1c1717;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.profile-header {
+    text-align: center;
+    padding: 20px;
+    background-color: #71b781;
+    color: #fff;
+}
+
+.profile-header img {
+    border-radius: 20%;
+    max-width: 80px;
+    height: auto;
+}
+
+.profile-data {
+    padding: 20px;
+    color: #000; /* Warna teks menjadi hitam */
+}
+
+.profile-data p {
+    margin: 10px 0;
+}
+
+header {
+    background-color: #71b781;
+    color: #fff;
+    text-align: center;
+    padding: 5px;
+}
+
+footer {
+    background-color: #71b781;
+    color: #fff;
+    text-align: center;
+    padding: 0px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}

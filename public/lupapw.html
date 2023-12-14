@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Lupa Password</title>
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+        />
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+                font-family: sans-serif;
+                background: linear-gradient(#ff0000, #ffffff);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 100vh;
+            }
+
+            /* CSS untuk form lupa password */
+            .forgot-password-form-container {
+                width: 300px;
+                background-color: rgb(255, 255, 255);
+                padding: 20px;
+                border: 1px solid #000000;
+                border-radius: 15px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                text-align: center;
+                position: relative;
+            }
+            .forgot-password-form-container h2 {
+                margin-bottom: 20px;
+            }
+
+            .forgot-password-form-container .input-field {
+                margin-bottom: 15px;
+                text-align: left;
+            }
+
+            .forgot-password-form-container label {
+                display: block;
+                font-weight: bold;
+                margin-bottom: 5px;
+            }
+
+            .forgot-password-form-container input[type="email"] {
+                width: 100%;
+                padding: 10px;
+                font-size: 16px;
+                border-radius: 5px;
+                border: 1px solid #ccc;
+                box-sizing: border-box;
+            }
+
+            .forgot-password-form-container button {
+                background: #3498db;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: background 0.3s;
+            }
+
+            .forgot-password-form-container button:hover {
+                background: #2980b9;
+            }
+
+            #forgot-password-close {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                cursor: pointer;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="forgot-password-form-container">
+            <i class="fas fa-times" id="forgot-password-close"></i>
+            <h2>Lupa Password</h2>
+            <form id="forgotPasswordForm">
+                <div class="input-field">
+                    <label for="email">Email</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Masukkan alamat email"
+                        required
+                    />
+                </div>
+                <button type="submit">Kirim</button>
+            </form>
+        </div>
+
+        <script>
+            // Tambahkan event listener untuk menutup form saat ikon silang diklik
+            document
+                .getElementById("forgot-password-close")
+                .addEventListener("click", function () {
+                    // Ganti dengan logika pengalihan ke halaman login atau menutup form sesuai kebutuhan
+                    window.location.href = "login.html";
+                });
+        </script>
+    </body>
+</html>
